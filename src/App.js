@@ -4,44 +4,78 @@ import Button from "react-bootstrap/Button";
 import Table from 'react-bootstrap/Table';
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import testData from './testdata.json';
 
 function App() {
   const [table, setTable] = useState(<></>);
   //TODO: change state hooks to match the elastic search topic.
   const [query, setQuery] = useState("");
-  //const [results, setResults] = useState([]);
+  const [results, setResults] = useState([]);
 
   //TODO: change submit handler to parse the elastic search query.
   const handleSubmit = (e) => {
       e.preventDefault(); //don't refresh page when submitted
-      setTable(
-          <Table striped bordered hover variant="dark">
-              <thead>
-                  <tr>
-                      <th>#</th>
-                      <th>Title</th>
-                      <th>Release Year</th>
-                      <th>Rating</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td>1</td>
-                      <td>Minions</td>
-                      <td>2015</td>
-                      <td>10.0</td>
-                  </tr>
-                  <tr>
-                      <td>2</td>
-                      <td>Minions: The Rise of Gru</td>
-                      <td>2022</td>
-                      <td>9.9</td>
-                  </tr>
-              </tbody>
-          </Table>
-      );
+      handleResults()
     };
+
+  useEffect(()=>{
+    if (results.length !== 0){
+    setTable(
+      <Table striped bordered hover variant="dark">
+          <thead>
+              <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Release Year</th>
+                  <th>Rating</th>
+                  <th></th>
+              </tr>
+          </thead>
+          <tbody>
+          {results.map((film)=>{
+              return(
+              <tr>
+                <td>{film.id}</td>
+                <td>{film.title}</td>
+                <td>{film.year}</td>
+                <td>{film.rating}</td>
+                <td className="d-grid gap-2" style={{"text-align":"center"}}>
+                  <Button 
+                    variant="secondary"
+                    id="button-addon2"
+                    size = "sm">
+                  Click to save!
+                  </Button>
+                </td>
+              </tr>
+              )
+          })
+          }
+          </tbody>
+      </Table>
+  );}
+  }, [results])
+
+  const handleResults = () =>{
+    let data = [];
+    
+    testData.forEach((film)=>{
+        let cur = [];
+
+        cur.id = film.imdbID;
+        cur.title = film.Title;
+        cur.year = film.Year;
+        cur.rating = film.imdbRating;
+
+        
+        data.push(cur);
+    });
+
+    setResults(data);
+
+  }
 
 
   return (
