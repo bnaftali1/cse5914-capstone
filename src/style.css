@@ -9,12 +9,14 @@ body{
     min-width: 500px;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: top;
+    padding-top: 50px;
      
 }
 .search-bar{
     width: 50%;
-    margin-bottom: 230px;
+    margin-bottom: 0px;
+    position:top;
 }
 .SearchBarTitle{
     color: rgb(192, 192, 192);

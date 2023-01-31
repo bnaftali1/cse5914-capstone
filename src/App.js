@@ -1,12 +1,12 @@
 import "./style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
-import Table from 'react-bootstrap/Table';
+import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import React, { useEffect, useState } from "react";
 
-import testData from './testdata.json';
+import testData from "./testdata.json";
 
 function App() {
   const [table, setTable] = useState(<></>);
@@ -16,67 +16,64 @@ function App() {
 
   //TODO: change submit handler to parse the elastic search query.
   const handleSubmit = (e) => {
-      e.preventDefault(); //don't refresh page when submitted
-      handleResults()
-    };
+    e.preventDefault(); //don't refresh page when submitted
+    handleResults();
+  };
 
-  useEffect(()=>{
-    if (results.length !== 0){
-    setTable(
-      <Table striped bordered hover variant="dark">
+  useEffect(() => {
+    if (results.length !== 0) {
+      setTable(
+        <Table striped bordered hover variant="dark" Style="">
           <thead>
-              <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Release Year</th>
-                  <th>Rating</th>
-                  <th></th>
-              </tr>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Release Year</th>
+              <th>Rating</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody>
-          {results.map((film)=>{
-              return(
-              <tr>
-                <td>{film.id}</td>
-                <td>{film.title}</td>
-                <td>{film.year}</td>
-                <td>{film.rating}</td>
-                <td className="d-grid gap-2" style={{"text-align":"center"}}>
-                  <Button 
-                    variant="secondary"
-                    id="button-addon2"
-                    size = "sm">
-                  Click to save!
-                  </Button>
-                </td>
-              </tr>
-              )
-          })
-          }
+            {results.map((film) => {
+              return (
+                <tr>
+                  <td>{film.id}</td>
+                  <td>{film.title}</td>
+                  <td>{film.year}</td>
+                  <td>{film.rating}</td>
+                  <td
+                    className="d-grid gap-2"
+                    style={{ "text-align": "center" }}
+                  >
+                    <Button variant="secondary" id="button-addon2" size="sm">
+                      Click to save!
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
-      </Table>
-  );}
-  }, [results])
+        </Table>
+      );
+    }
+  }, [results]);
 
-  const handleResults = () =>{
+  const handleResults = () => {
     let data = [];
-    
-    testData.forEach((film)=>{
-        let cur = [];
 
-        cur.id = film.imdbID;
-        cur.title = film.Title;
-        cur.year = film.Year;
-        cur.rating = film.imdbRating;
+    testData.forEach((film) => {
+      let cur = [];
 
-        
-        data.push(cur);
+      cur.id = film.imdbID;
+      cur.title = film.Title;
+      cur.year = film.Year;
+      cur.rating = film.imdbRating;
+
+      data.push(cur);
     });
 
     setResults(data);
-
-  }
-
+  };
 
   return (
     <>
@@ -102,11 +99,10 @@ function App() {
                 id="button-addon2"
               >
                 Search
-                </Button>
-                         
+              </Button>
             </InputGroup>
-                  </Form>
-           {table}
+          </Form>
+          {table}
         </div>
       </div>
     </>
