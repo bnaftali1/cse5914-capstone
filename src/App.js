@@ -23,7 +23,7 @@ function App() {
   useEffect(() => {
     if (results.length !== 0) {
       setTable(
-        <Table striped bordered hover variant="dark" Style="">
+        <Table striped bordered hover variant="dark">
           <thead>
             <tr>
               <th>#</th>
