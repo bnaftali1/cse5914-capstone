@@ -24,6 +24,7 @@ in the browser to view the information:
 ￼
 
 Also, there are other commands in browser:
+
 (1)View the nodes in our cluster:
 ### http://localhost:9200/_cat/nodes?v
 (2)View the indices in our nodes:
@@ -34,6 +35,7 @@ We can view the health of our cluster through the following command in terminal:
 
 ## 3.Create Index
 Let's use the Create-Index API to create an index, and then index a document to the Index-Document API. Run the following commands in terminal:
+
 curl -X PUT \
   http://localhost:9200/test_imdb \
   -H 'Content-Type: application/json' \
