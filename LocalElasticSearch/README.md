@@ -54,6 +54,8 @@ to check.
 
 
 ## 4.Load data
+First download datafile name.basic.tsv from https://datasets.imdbws.com/. Then use the python file TsvToCsv.py to transfer tsv file to csv file. Hence we get the file name.basic.csv.
+
 There is a python file that can input csv data into elasticsearch. The format command to that is:
 python3 load_csv_or_json_to_elasticsearch.py filename indexName
 For example:
