@@ -66,7 +66,8 @@ I also provide a python file TsvToCsv.py that transfer tsv file to csv file.
 
 
 ## 5.View  and  search data:
-In the browser, to view data we run: \
+In the browser, to view data we run:\
 http://localhost:9200/test-imdb/_search?pretty
-\To search data, For example  we search people whose primary  profession is actor, the we run:\
+\
+To search data, For example  we search people whose primary  profession is actor, the we run:\
 http://localhost:9200/test_imdb/_search?pretty&q=primaryProfession=actor
