@@ -36,8 +36,7 @@ curl localhost:9202/_cluster/health?pretty
 ## 3.Create Index
 Let's use the Create-Index API to create an index, and then index a document to the Index-Document API. Run the following commands in terminal:
 
-curl -X PUT \
-  http://localhost:9200/test_imdb \
+curl -X PUT http://localhost:9200/test_imdb \
   -H 'Content-Type: application/json' \
   -d '{
     "settings" : {
