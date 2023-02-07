@@ -15,7 +15,7 @@ def create_Index(es):
             }
         }
     }
-    result = es.indices.put_mapping(index='news', body=mapping)
+    result = es.indices.put_mapping(index='imdb', body=mapping)
     print(result)
 
 
