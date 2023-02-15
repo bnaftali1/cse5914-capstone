@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Search(props) {
-  const { results, setResults } = props;
+  //const { results, setResults } = props;
   const [table, setTable] = useState(<></>);
   const savedTable = [];
   //TODO: change state hooks to match the elastic search topic.
@@ -40,7 +40,7 @@ function Search(props) {
         cur.rating = film._source.averageRating;
         data.push(cur);
       });
-      setResults(data);
+      //setResults(data);
       setTable(
         <Table striped bordered hover variant="dark">
           <thead>
