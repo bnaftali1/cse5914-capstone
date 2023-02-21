@@ -8,14 +8,9 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Search(props) {
-  //const { results, setResults } = props;
-  const [table, setTable] = useState(<></>);
-  const savedTable = [];
-  //TODO: change state hooks to match the elastic search topic.
-  const [query, setQuery] = useState("");
-
-  const [savedValues, setSavedResults] = useState(new Map());
-  //const [testData, setTestData] = useState([]);
+  const [results, setResults] = useState([]); //return of axios call
+  const [query, setQuery] = useState(""); //what the user types into search bar
+  const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
 
   const client = axios.create({
     withCredentials: true,
@@ -31,73 +26,30 @@ function Search(props) {
         "/imdb/_search?pretty&q=primaryTitle=" + query
       );
       console.log("Res:", res?.data?.hits?.hits);
-      let data = [];
+      let queryReturn = [];
       res?.data?.hits?.hits.forEach((film) => {
-        let cur = [];
+        let cur = {};
         cur.id = film._id;
         cur.title = film._source.primaryTitle;
         cur.year = film._source.startYear;
         cur.rating = film._source.averageRating;
-        data.push(cur);
+        queryReturn.push(cur);
       });
-      //setResults(data);
-      setTable(
-        <Table striped bordered hover variant="dark">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Release Year</th>
-              <th>Rating</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((film) => {
-              return (
-                <tr>
-                  <td>{film.id}</td>
-                  <td>{film.title}</td>
-                  <td>{film.year}</td>
-                  <td>{film.rating}</td>
-                  <td className="d-grid gap-2" style={{ textAlign: "center" }}>
-                    <Button
-                      variant="secondary"
-                      id="button-addon2"
-                      size="sm"
-                      onClick={() =>
-                        testFunction(
-                          film.title,
-                          film.year,
-                          film.rating,
-                          film.id
-                        )
-                      }
-                    >
-                      Click to save!
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      );
+      setResults(queryReturn);
     }
   };
-  const testFunction = (filmTitle, filmYear, filmRating, filmID) => {
-    var filmInfo = [filmTitle, filmYear, filmRating];
-    if (!savedValues.has(filmID)) {
-      const updateMap = (key, value) => {
-        setSavedResults((map) => new Map(map.set(key, value)));
-      };
-      updateMap(filmID, filmInfo);
+
+
+
+  const saveMovie = (film) => {
+    if (!savedMovies.includes(film)) {
+      setSavedMovies(savedMovies => [...savedMovies, film]);
     }
   };
 
   return (
     <>
-      {savedValues.size > 0 && (
+      {savedMovies.length > 0 && (
         <Table striped bordered hover variant="dark">
           <thead>
             <tr>
@@ -107,16 +59,15 @@ function Search(props) {
             </tr>
           </thead>
           <tbody>
-            {savedValues.forEach((value) => {
-              savedTable.push(
+            {savedMovies.map((film) => {
+              return(
                 <tr>
-                  <td>{value[0]}</td>
-                  <td>{value[1]}</td>
-                  <td>{value[2]}</td>
+                  <td>{film.title}</td>
+                  <td>{film.year}</td>
+                  <td>{film.rating}</td>
                 </tr>
               );
             })}
-            {savedTable}
           </tbody>
         </Table>
       )}
@@ -140,7 +91,42 @@ function Search(props) {
           </Button>
         </InputGroup>
       </Form>
-      {table}
+
+      {results.length > 0 && (
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Release Year</th>
+              <th>Rating</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {results.map((film) => {
+              return(
+                <tr>
+                  <td>{film.title}</td>
+                  <td>{film.year}</td>
+                  <td>{film.rating}</td>
+                  <td className="d-grid gap-2" style={{ textAlign: "center" }}>
+                    <Button
+                      variant="secondary"
+                      id="button-addon2"
+                      size="sm"
+                      onClick={() =>
+                        saveMovie(film)
+                      }
+                    >
+                      Click to save!
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      )}
     </>
   );
 }
