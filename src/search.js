@@ -39,7 +39,11 @@ function Search(props) {
     }
   };
 
-
+    const deleteMovie = (deleteFilm) => {
+        setSavedMovies((savedMovies) =>
+            savedMovies.filter((film) => film.id !== deleteFilm.id)
+        );
+    }
 
   const saveMovie = (film) => {
     if (!savedMovies.includes(film)) {
@@ -56,6 +60,8 @@ function Search(props) {
               <th>Title</th>
               <th>Release Year</th>
               <th>Rating</th>
+              <th></th>
+
             </tr>
           </thead>
           <tbody>
@@ -65,6 +71,15 @@ function Search(props) {
                   <td>{film.title}</td>
                   <td>{film.year}</td>
                   <td>{film.rating}</td>
+                   <td><Button
+                          variant="danger"
+                          id="button-addon2"
+                          size="sm"
+                          onClick={() =>
+                              deleteMovie(film)
+                          }
+                      >Remove</Button>
+                      </td>
                 </tr>
               );
             })}
@@ -110,16 +125,29 @@ function Search(props) {
                   <td>{film.year}</td>
                   <td>{film.rating}</td>
                   <td className="d-grid gap-2" style={{ textAlign: "center" }}>
-                    <Button
-                      variant="secondary"
-                      id="button-addon2"
-                      size="sm"
-                      onClick={() =>
-                        saveMovie(film)
-                      }
-                    >
-                      Click to save!
-                    </Button>
+                          {savedMovies.includes(film) ? (
+                              <Button
+                                  variant="danger"
+                                  id="button-addon2"
+                                  size="sm"
+                                  onClick={() =>
+                                      deleteMovie(film)
+                                  }
+                              >
+                                  Remove Saved
+                              </Button>
+                          ) : (
+                              <Button
+                                  variant="secondary"
+                                  id="button-addon2"
+                                  size="sm"
+                                  onClick={() =>
+                                      saveMovie(film)
+                                  }
+                              >
+                                  Click to Save!
+                              </Button>
+                          )}
                   </td>
                 </tr>
               );
