@@ -12,7 +12,7 @@ function Search(props) {
   const [query, setQuery] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
   
-  const token = `${process.env.REACT_APP_BONSAI_UNAME;}:${process.env.REACT_APP_BONSAI_PSWRD;}`;
+  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
   const encodedToken = Buffer.from(token).toString("base64");
   
   const client = axios.create({
