@@ -7,6 +7,8 @@ import InputGroup from "react-bootstrap/InputGroup";
 import React, { useState } from "react";
 import axios from "axios";
 
+var Buffer = require("buffer/").Buffer;
+
 function Search(props) {
   const [results, setResults] = useState([]); //return of axios call
   const [query, setQuery] = useState(""); //what the user types into search bar
