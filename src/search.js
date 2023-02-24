@@ -13,10 +13,10 @@ function Search(props) {
   const [results, setResults] = useState([]); //return of axios call
   const [query, setQuery] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
-  
+
   const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
   const encodedToken = Buffer.from(token).toString("base64");
-  
+
   const client = axios.create({
     withCredentials: true,
     baseURL: "https://osu-cse-search-4067143756.us-east-1.bonsaisearch.net",
@@ -45,11 +45,15 @@ function Search(props) {
     }
   };
 
-
+  const deleteMovie = (deleteFilm) => {
+    setSavedMovies((savedMovies) =>
+      savedMovies.filter((film) => film.id !== deleteFilm.id)
+    );
+  };
 
   const saveMovie = (film) => {
     if (!savedMovies.includes(film)) {
-      setSavedMovies(savedMovies => [...savedMovies, film]);
+      setSavedMovies((savedMovies) => [...savedMovies, film]);
     }
   };
 
@@ -62,15 +66,26 @@ function Search(props) {
               <th>Title</th>
               <th>Release Year</th>
               <th>Rating</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {savedMovies.map((film) => {
-              return(
+              return (
                 <tr>
                   <td>{film.title}</td>
                   <td>{film.year}</td>
                   <td>{film.rating}</td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      id="button-addon2"
+                      size="sm"
+                      onClick={() => deleteMovie(film)}
+                    >
+                      Remove
+                    </Button>
+                  </td>
                 </tr>
               );
             })}
@@ -110,22 +125,31 @@ function Search(props) {
           </thead>
           <tbody>
             {results.map((film) => {
-              return(
+              return (
                 <tr>
                   <td>{film.title}</td>
                   <td>{film.year}</td>
                   <td>{film.rating}</td>
                   <td className="d-grid gap-2" style={{ textAlign: "center" }}>
-                    <Button
-                      variant="secondary"
-                      id="button-addon2"
-                      size="sm"
-                      onClick={() =>
-                        saveMovie(film)
-                      }
-                    >
-                      Click to save!
-                    </Button>
+                    {savedMovies.includes(film) ? (
+                      <Button
+                        variant="danger"
+                        id="button-addon2"
+                        size="sm"
+                        onClick={() => deleteMovie(film)}
+                      >
+                        Remove Saved
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        id="button-addon2"
+                        size="sm"
+                        onClick={() => saveMovie(film)}
+                      >
+                        Click to Save!
+                      </Button>
+                    )}
                   </td>
                 </tr>
               );
