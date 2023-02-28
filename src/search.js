@@ -14,7 +14,7 @@ function Search(props) {
   const [query, setQuery] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
 
-  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
+    const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
   const encodedToken = Buffer.from(token).toString("base64");
 
   const client = axios.create({
@@ -38,7 +38,8 @@ function Search(props) {
         cur.id = film._id;
         cur.title = film._source.primaryTitle;
         cur.year = film._source.startYear;
-        cur.rating = film._source.averageRating;
+          cur.rating = film._source.averageRating;
+          cur.imageUrl = film._source.imageUrl;
         queryReturn.push(cur);
       });
       setResults(queryReturn);
@@ -173,7 +174,8 @@ function Search(props) {
                 <tr>
                   <td>{film.title}</td>
                   <td>{film.year}</td>
-                  <td>{film.rating}</td>
+                      <td>{film.rating}</td>
+                      <td><img src={film.imageUrl} /></td>
                   <td className="d-grid gap-2" style={{ textAlign: "center" }}>
                     {savedMovies.includes(film) ? (
                       <Button
