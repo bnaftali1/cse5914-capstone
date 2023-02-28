@@ -56,16 +56,45 @@ function Search(props) {
       setSavedMovies((savedMovies) => [...savedMovies, film]);
     }
   };
-
+  const sortTitle = (target) => {
+    const sortedTitles = [...target].sort((a, b) => {
+      const nameA = a.title.toUpperCase();
+      const nameB = b.title.toUpperCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+    setSavedMovies(sortedTitles);
+    console.log(savedMovies);
+  };
   return (
     <>
       {savedMovies.length > 0 && (
         <Table striped bordered hover variant="dark">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Release Year</th>
-              <th>Rating</th>
+              <th>
+                Title{" "}
+                <Button
+                  className="sort-button"
+                  onClick={() => sortTitle(savedMovies)}
+                >
+                  ↓
+                </Button>
+                <Button className="sort-button">↑</Button>
+              </th>
+              <th>
+                Release Year<Button className="sort-button">↓</Button>
+                <Button className="sort-button">↑</Button>
+              </th>
+              <th>
+                Rating<Button className="sort-button">↓</Button>
+                <Button className="sort-button">↑</Button>
+              </th>
               <th></th>
             </tr>
           </thead>
@@ -117,9 +146,24 @@ function Search(props) {
         <Table striped bordered hover variant="dark">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Release Year</th>
-              <th>Rating</th>
+              <th>
+                Title
+                <Button
+                  className="sort-button"
+                  onClick={() => sortTitle(results)}
+                >
+                  ↓
+                </Button>
+                <Button className="sort-button">↑</Button>
+              </th>
+              <th>
+                Release Year<Button className="sort-button">↓</Button>
+                <Button className="sort-button">↑</Button>
+              </th>
+              <th>
+                Rating<Button className="sort-button">↓</Button>
+                <Button className="sort-button">↑</Button>
+              </th>
               <th></th>
             </tr>
           </thead>
