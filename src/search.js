@@ -124,7 +124,7 @@ function Search(props) {
         </Table>
       )}
 
-      <h3 className="SearchBarTitle">ElasticMedia</h3>
+      <h3 className="SearchBarTitle">FlickMe</h3>
       <Form onSubmit={handleSubmit} className="search-bar">
         <InputGroup className="mb-3" size="lg">
           <Form.Control
