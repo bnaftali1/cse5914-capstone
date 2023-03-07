@@ -15,7 +15,7 @@ function Search(props) {
   const [query, setQuery] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
 
-  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
+  const token = 
   const encodedToken = Buffer.from(token).toString("base64");
 
   const client = axios.create({
@@ -54,7 +54,8 @@ function Search(props) {
   };
 
   const saveMovie = (film) => {
-    if (!savedMovies.includes(film)) {
+    if (!savedMovies.find((e) => e.id === film.id)) {
+      console.log(film.id);
       setSavedMovies((savedMovies) => [...savedMovies, film]);
     }
   };
@@ -150,13 +151,23 @@ function Search(props) {
             {results.map((film) => {
               return (
                 <Carousel.Item>
-                  <img
-                    className="d-block w-100"
-                    src={film.imageUrl}
-                    alt="First slide"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => saveMovie(film)}
-                  />
+                  {savedMovies.includes(film) ? (
+                    <img
+                      className="d-block w-100"
+                      src={film.imageUrl}
+                      alt="First slide"
+                      style={{ cursor: "pointer", filter: "grayscale(1)" }}
+                      onClick={() => deleteMovie(film)}
+                    />
+                  ) : (
+                    <img
+                      className="d-block w-100"
+                      src={film.imageUrl}
+                      alt="First slide"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => saveMovie(film)}
+                    />
+                  )}
                 </Carousel.Item>
               );
               {
