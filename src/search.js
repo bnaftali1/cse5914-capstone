@@ -328,10 +328,10 @@ function Search(props) {
       const nameA = a.title.toUpperCase();
       const nameB = b.title.toUpperCase();
       if (nameA < nameB) {
-        return -1;
+        return 1;
       }
       if (nameA > nameB) {
-        return 1;
+        return -1;
       }
       return 0;
     });
@@ -344,10 +344,10 @@ function Search(props) {
       const nameA = a.title.toUpperCase();
       const nameB = b.title.toUpperCase();
       if (nameA < nameB) {
-        return 1;
+        return -1;
       }
       if (nameA > nameB) {
-        return -1;
+        return 1;
       }
       return 0;
     });
@@ -360,10 +360,10 @@ function Search(props) {
       const yearA = a.year;
       const yearB = b.year;
       if (yearA < yearB) {
-        return -1;
+        return 1;
       }
       if (yearA > yearB) {
-        return 1;
+        return -1;
       }
       return 0;
     });
@@ -376,10 +376,10 @@ function Search(props) {
       const yearA = a.year;
       const yearB = b.year;
       if (yearA < yearB) {
-        return 1;
+        return -1;
       }
       if (yearA > yearB) {
-        return -1;
+        return 1;
       }
       return 0;
     });
@@ -392,10 +392,10 @@ function Search(props) {
       const ratingA = a.rating;
       const ratingB = b.rating;
       if (ratingA < ratingB) {
-        return -1;
+        return 1;
       }
       if (ratingA > ratingB) {
-        return 1;
+        return -1;
       }
       return 0;
     });
@@ -408,10 +408,10 @@ function Search(props) {
       const ratingA = a.rating;
       const ratingB = b.rating;
       if (ratingA < ratingB) {
-        return 1;
+        return -1;
       }
       if (ratingA > ratingB) {
-        return -1;
+        return 1;
       }
       return 0;
     });
