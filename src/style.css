@@ -124,3 +124,9 @@ input[type="checkbox"]:checked + .check:not(:hover) {
     color: #a7a7a7 !important;
 
 }
+.card-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    height: calc(100% - 15px);
+}

@@ -7,6 +7,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import React, { useState } from "react";
 import axios from "axios";
 import Carousel from "react-grid-carousel";
+import Card from "react-bootstrap/Card";
 
 var Buffer = require("buffer/").Buffer;
 
@@ -15,22 +16,22 @@ function Search(props) {
   const [input, setInput] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
 
-  const [selectedLink1, setSelectedLink1] = useState('');
-  const [selectedLink2, setSelectedLink2] = useState('');
-  
+  const [selectedLink1, setSelectedLink1] = useState("");
+  const [selectedLink2, setSelectedLink2] = useState("");
+
   const handleDropDownMenuChange1 = (e) => {
-     setSelectedLink1(e.target.value);
-  }
+    setSelectedLink1(e.target.value);
+  };
 
   const handleDropDownMenuChange2 = (e) => {
     setSelectedLink2(e.target.value);
- }
+  };
 
   const [selectedCheckbox, setSelectedCheckbox] = useState(null);
 
   const handleCheckboxChange = (event) => {
     setSelectedCheckbox(event.target.value);
-  }
+  };
 
   const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
   const encodedToken = Buffer.from(token).toString("base64");
@@ -46,82 +47,82 @@ function Search(props) {
     e.preventDefault(); //don't refresh page when submitted
     var esQuery = null;
     if (input !== "") {
-        if(selectedCheckbox === 'title'){         
-          esQuery = {
-            query: {
-              match: {
-                primaryTitle: input
-              }
-            }
-          };
-        } else if(selectedCheckbox === 'genre'){
-            esQuery = {
-              query: {
-                match: {
-                  genres: input
-                }
-              }
-            };
-        } else if (selectedCheckbox === 'year'){
-            esQuery = {
-              query: {
-                match: {
-                  startYear: input
-                }
-              }
-            };
-
-        } else if (selectedCheckbox === 'actor'){
-            esQuery = {
-              query: {
-                match: {
-                  actor: input
-                }
-              }
-            };
-        } else if (selectedCheckbox === 'actress'){
-            esQuery = {
-              query: {
-                match: {
-                  actress: input
-                }
-              }
-            };
-        } else if (selectedCheckbox === 'writer'){
-            esQuery = {
-              query: {
-                match: {
-                  writer: input
-                }
-              }
-            };
-        } else if (selectedCheckbox === 'director'){
-            esQuery = {
-              query: {
-                match: {
-                  director: input
-                }
-              }
-            };
-        } else if (selectedCheckbox === 'producer'){
-            esQuery = {
-              query: {
-                match: {
-                  producer: input
-                }
-              }
-            };
-        } else {
-          esQuery = {
-            query: {
-              match: {
-                primaryTitle: input
-              }
-            }
-          };
-        } 
-        client.post('/imdb/_search', esQuery)
-        .then(response => {
+      if (selectedCheckbox === "title") {
+        esQuery = {
+          query: {
+            match: {
+              primaryTitle: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "genre") {
+        esQuery = {
+          query: {
+            match: {
+              genres: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "year") {
+        esQuery = {
+          query: {
+            match: {
+              startYear: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "actor") {
+        esQuery = {
+          query: {
+            match: {
+              actor: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "actress") {
+        esQuery = {
+          query: {
+            match: {
+              actress: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "writer") {
+        esQuery = {
+          query: {
+            match: {
+              writer: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "director") {
+        esQuery = {
+          query: {
+            match: {
+              director: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "producer") {
+        esQuery = {
+          query: {
+            match: {
+              producer: input,
+            },
+          },
+        };
+      } else {
+        esQuery = {
+          query: {
+            match: {
+              primaryTitle: input,
+            },
+          },
+        };
+      }
+      client
+        .post("/imdb/_search", esQuery)
+        .then((response) => {
           console.log(response.data.hits.hits);
           let queryReturn = [];
           response?.data?.hits?.hits.forEach((film) => {
@@ -132,10 +133,10 @@ function Search(props) {
             cur.rating = film._source.averageRating;
             cur.imageUrl = film._source.imageUrl;
             queryReturn.push(cur);
-          }); 
+          });
           setResults(queryReturn);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
         });
     }
@@ -153,9 +154,9 @@ function Search(props) {
     }
   };
 
-  function showMoviePlayList(){
+  function showMoviePlayList() {
     return (
-        <>
+      <>
         {savedMovies.length > 0 && (
           <Table striped bordered hover variant="dark">
             <thead>
@@ -168,7 +169,7 @@ function Search(props) {
                   >
                     ↓
                   </Button>
-                  <Button 
+                  <Button
                     className="sort-button"
                     onClick={() => sortTitleReverse(savedMovies)}
                   >
@@ -177,28 +178,28 @@ function Search(props) {
                 </th>
                 <th>
                   Release Year
-                  <Button 
+                  <Button
                     className="sort-button"
                     onClick={() => sortYear(savedMovies)}
                   >
                     ↓
                   </Button>
-                  <Button 
+                  <Button
                     className="sort-button"
                     onClick={() => sortYearReverse(savedMovies)}
-                  > 
+                  >
                     ↑
                   </Button>
                 </th>
                 <th>
                   Rating
-                  <Button 
+                  <Button
                     className="sort-button"
                     onClick={() => sortRating(savedMovies)}
                   >
                     ↓
                   </Button>
-                  <Button 
+                  <Button
                     className="sort-button"
                     onClick={() => sortRatingReverse(savedMovies)}
                   >
@@ -230,98 +231,97 @@ function Search(props) {
               })}
             </tbody>
           </Table>
-    )
+        )}
+      </>
+    );
   }
-  </>
- );
-}
 
-function showMovieCheckboxes(){
-  return(
+  function showMovieCheckboxes() {
+    return (
       <Form>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="title"
-                  checked={selectedCheckbox === 'title'}
-                  onChange={handleCheckboxChange}
-              />
-              Movie Title
-              <span class="box"></span>
-          </label>  
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="genre"
-                  checked={selectedCheckbox === 'genre'}
-                  onChange={handleCheckboxChange}
-              />
-              Genre
-              <span class="box"></span>
-          </label>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="year"
-                  checked={selectedCheckbox === 'year'}
-                  onChange={handleCheckboxChange}
-              />
-              Year
-              <span class="box"></span>
-          </label>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="actor"
-                  checked={selectedCheckbox === 'actor'}
-                  onChange={handleCheckboxChange}
-              />
-              Actor
-              <span class="box"></span>
-          </label>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="actress"
-                  checked={selectedCheckbox === 'actress'}
-                  onChange={handleCheckboxChange}
-              />
-              Actress
-              <span class="box"></span>
-          </label>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="writer"
-                  checked={selectedCheckbox === 'writer'}
-                  onChange={handleCheckboxChange}
-              />
-              Writer
-              <span class="box"></span>
-          </label>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="director"
-                  checked={selectedCheckbox === 'director'}
-                  onChange={handleCheckboxChange}
-              />
-              Director
-              <span class="box"></span>
-          </label>
-          <label class="check">
-              <input
-                  type="checkbox"
-                  value="producer"
-                  checked={selectedCheckbox === 'producer'}
-                  onChange={handleCheckboxChange}
-              />
-              Producer
-              <span class="box"></span>
-          </label>
-    </Form>
-  )
-}
+        <label class="check">
+          <input
+            type="checkbox"
+            value="title"
+            checked={selectedCheckbox === "title"}
+            onChange={handleCheckboxChange}
+          />
+          Movie Title
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="genre"
+            checked={selectedCheckbox === "genre"}
+            onChange={handleCheckboxChange}
+          />
+          Genre
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="year"
+            checked={selectedCheckbox === "year"}
+            onChange={handleCheckboxChange}
+          />
+          Year
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="actor"
+            checked={selectedCheckbox === "actor"}
+            onChange={handleCheckboxChange}
+          />
+          Actor
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="actress"
+            checked={selectedCheckbox === "actress"}
+            onChange={handleCheckboxChange}
+          />
+          Actress
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="writer"
+            checked={selectedCheckbox === "writer"}
+            onChange={handleCheckboxChange}
+          />
+          Writer
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="director"
+            checked={selectedCheckbox === "director"}
+            onChange={handleCheckboxChange}
+          />
+          Director
+          <span class="box"></span>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            value="producer"
+            checked={selectedCheckbox === "producer"}
+            onChange={handleCheckboxChange}
+          />
+          Producer
+          <span class="box"></span>
+        </label>
+      </Form>
+    );
+  }
 
   const sortTitle = (target) => {
     const sortedTitles = [...target].sort((a, b) => {
@@ -419,29 +419,30 @@ function showMovieCheckboxes(){
     console.log(savedMovies);
   };
 
-
   return (
     <>
-      <div class = "dropdown">
-            <select value={selectedLink1} onChange={handleDropDownMenuChange1}>
-                <option value="">View My Playlists:</option>
-                <option value="moviePlaylist">My Movie Playlist</option>
-                <option value="songPlaylist">My Song Playlist</option>
-                <option value="tvPlaylist">My TV Show Playlist</option>
-            </select>
-            {selectedLink1 === 'moviePlaylist' && showMoviePlayList()}
-        </div>
+      <div class="dropdown">
+        {savedMovies.length > 0 && (
+          <select value={selectedLink1} onChange={handleDropDownMenuChange1}>
+            <option value="">View My Playlists:</option>
+            <option value="moviePlaylist">My Movie Playlist</option>
+            <option value="songPlaylist">My Song Playlist</option>
+            <option value="tvPlaylist">My TV Show Playlist</option>
+          </select>
+        )}
+        {selectedLink1 === "moviePlaylist" && showMoviePlayList()}
+      </div>
       <h3 className="SearchBarTitle">FlickMe</h3>
-        <div class = "dropdown2">
-            <select value={selectedLink2} onChange={handleDropDownMenuChange2}>
-                <option value="">Select a form of media:</option>
-                <option value="movies">Movies</option>
-                <option value="songs">Songs</option>
-                <option value="tv">TV Shows</option>
-            </select>
-            {selectedLink2 === 'movies' && showMovieCheckboxes()}
-        </div>
-      
+      <div class="dropdown2">
+        <select value={selectedLink2} onChange={handleDropDownMenuChange2}>
+          <option value="">Select a form of media:</option>
+          <option value="movies">Movies</option>
+          <option value="songs">Songs</option>
+          <option value="tv">TV Shows</option>
+        </select>
+        {selectedLink2 === "movies" && showMovieCheckboxes()}
+      </div>
+
       <Form onSubmit={handleSubmit} className="search-bar">
         <InputGroup className="mb-3" size="lg">
           <Form.Control
@@ -466,23 +467,103 @@ function showMovieCheckboxes(){
           <Carousel cols={5} rows={1} gap={10} loop>
             {results.map((film) => {
               return (
-                <Carousel.Item>
+                <Carousel.Item
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
                   {savedMovies.includes(film) ? (
-                    <img
-                      className="d-block w-100"
-                      src={film.imageUrl}
-                      alt="First slide"
-                      style={{ cursor: "pointer", filter: "grayscale(1)" }}
-                      onClick={() => deleteMovie(film)}
-                    />
+                    <>
+                      <div classNam="card-wrapper">
+                        <Card
+                          border="success"
+                          style={{
+                            backgroundColor: "transparent",
+                            height: "430px",
+                          }}
+                        >
+                          <Card.Img
+                            className="d-block w-100"
+                            variant="top"
+                            src={film.imageUrl}
+                            alt={film.title}
+                            style={{
+                              cursor: "pointer",
+                              height: "auto",
+                              maxHeight: "320px",
+                              padding: "22px",
+                              filter: "grayscale(1)",
+                            }}
+                            onClick={() => deleteMovie(film)}
+                          />
+                          <Card.Header
+                            style={{
+                              color: "rgb(206, 206, 206)",
+
+                              paddingBottom: "0",
+                            }}
+                          >
+                            {film.title}
+                          </Card.Header>
+                          <Card.Body>
+                            <Card.Text
+                              style={{
+                                color: "rgb(206, 206, 206)",
+                                margin: "0",
+                              }}
+                            >
+                              {film.year}
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>
+                      </div>
+                    </>
                   ) : (
-                    <img
-                      className="d-block w-100"
-                      src={film.imageUrl}
-                      alt="First slide"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => saveMovie(film)}
-                    />
+                    <>
+                      <div classNam="card-wrapper">
+                        <Card
+                          border="success"
+                          style={{
+                            backgroundColor: "transparent",
+                            height: "430px",
+                          }}
+                        >
+                          <Card.Img
+                            className="d-block w-100"
+                            variant="top"
+                            src={film.imageUrl}
+                            alt={film.title}
+                            style={{
+                              cursor: "pointer",
+                              height: "auto",
+                              maxHeight: "320px",
+                              padding: "25px",
+                            }}
+                            onClick={() => saveMovie(film)}
+                          />
+                          <Card.Header
+                            style={{
+                              color: "rgb(206, 206, 206)",
+
+                              paddingBottom: "0",
+                            }}
+                          >
+                            {film.title}
+                          </Card.Header>
+
+                          <Card.Body>
+                            <Card.Text
+                              style={{
+                                color: "rgb(206, 206, 206)",
+                                margin: "0",
+                              }}
+                            >
+                              {film.year}
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>
+                      </div>
+                    </>
                   )}
                 </Carousel.Item>
               );
