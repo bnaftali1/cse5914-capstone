@@ -33,7 +33,7 @@ function Search(props) {
     setSelectedCheckbox(event.target.value);
   };
 
-  const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
+  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
   const encodedToken = Buffer.from(token).toString("base64");
 
   const client = axios.create({
