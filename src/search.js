@@ -2,6 +2,7 @@ import "./style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import React, { useState } from "react";
@@ -420,7 +421,8 @@ function Search(props) {
   };
 
   return (
-    <>
+      <>
+         
       <div class="dropdown">
         {savedMovies.length > 0 && (
           <select value={selectedLink1} onChange={handleDropDownMenuChange1}>
