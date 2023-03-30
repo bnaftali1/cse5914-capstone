@@ -36,11 +36,11 @@ function App() {
                               title="Options"
                               menuVariant="dark"
                           >
-                              <NavDropdown.Item href="#">Action</NavDropdown.Item>
+                              <NavDropdown.Item href="#">My Saved Movies</NavDropdown.Item>
                               <NavDropdown.Item href="#action/3.2">
-                                  Another action
+                                  Recommendations
                               </NavDropdown.Item>
-                              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                              <NavDropdown.Item href="#action/3.3">Movie Search</NavDropdown.Item>
                               <NavDropdown.Divider />
                               <NavDropdown.Item href="#action/3.4">
                                   Separated link
