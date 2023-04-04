@@ -2,6 +2,7 @@ import "./style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -14,12 +15,8 @@ import Card from "react-bootstrap/Card";
 var Buffer = require("buffer/").Buffer;
 
 function Search(props) {
-  const [value, setValue] = useState("");
-  const handleSelect = (e) => {
-    console.log(e);
-    setValue(e);
-  };
   const [results, setResults] = useState([]); //return of axios call
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [input, setInput] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
 
@@ -42,7 +39,7 @@ function Search(props) {
     console.log(event.target.value.toLowerCase());
   };
 
-  const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
+  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
   const encodedToken = Buffer.from(token).toString("base64");
 
   const client = axios.create({
@@ -50,7 +47,37 @@ function Search(props) {
     baseURL: "https://osu-cse-search-4067143756.us-east-1.bonsaisearch.net",
     headers: { Authorization: "Basic " + encodedToken },
   });
+  const recommend_query = () => {
+    var rec_query = null;
+    const movie_ids = savedMovies.map((film) => film.id);
+    const like = movie_ids.map((id) => ({ _index: "imdb", _id: id }));
+    var movie_query = "";
+    for (var i = 0; i < movie_ids.length; i++) {}
+    rec_query = {
+      query: {
+        more_like_this: {
+          fields: ["genres"],
 
+          like,
+          min_term_freq: 1,
+          max_query_terms: 12,
+        },
+      },
+    };
+    client.post("/imdb/_search", rec_query).then((response) => {
+      let queryReturn = [];
+      response?.data?.hits?.hits.forEach((film) => {
+        let cur = {};
+        cur.id = film._id;
+        cur.title = film._source.primaryTitle;
+        cur.year = film._source.startYear;
+        cur.rating = film._source.averageRating;
+        cur.imageUrl = film._source.imageUrl;
+        queryReturn.push(cur);
+      });
+      setRecommendedMovies(queryReturn);
+    });
+  };
   //TODO: change submit handler to parse the elastic search query.
   const handleSubmit = async (e) => {
     e.preventDefault(); //don't refresh page when submitted
@@ -241,6 +268,14 @@ function Search(props) {
             </tbody>
           </Table>
         )}
+        <Button
+          button
+          type="button"
+          class="btn btn-outline-primary"
+          onClick={recommend_query}
+        >
+          Recommendations!
+        </Button>
       </>
     );
   }
@@ -439,6 +474,116 @@ function Search(props) {
             <option value="tvPlaylist">My TV Show Playlist</option>
           </select>
         )}
+        {recommendedMovies.length > 0 && (
+          <div>
+            <Carousel cols={5} rows={1} gap={10} loop>
+              {recommendedMovies.map((film) => {
+                return (
+                  <Carousel.Item
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    {savedMovies.includes(film) ? (
+                      <>
+                        <div classNam="card-wrapper">
+                          <Card
+                            border="success"
+                            style={{
+                              backgroundColor: "transparent",
+                              height: "430px",
+                            }}
+                          >
+                            <Card.Img
+                              className="d-block w-100"
+                              variant="top"
+                              src={film.imageUrl}
+                              alt={film.title}
+                              style={{
+                                cursor: "pointer",
+                                height: "auto",
+                                maxHeight: "320px",
+                                padding: "22px",
+                                filter: "grayscale(1)",
+                              }}
+                              onClick={() => deleteMovie(film)}
+                            />
+                            <Card.Header
+                              style={{
+                                color: "rgb(206, 206, 206)",
+
+                                paddingBottom: "0",
+                              }}
+                            >
+                              {film.title}
+                            </Card.Header>
+                            <Card.Body>
+                              <Card.Text
+                                style={{
+                                  color: "rgb(206, 206, 206)",
+                                  margin: "0",
+                                }}
+                              >
+                                {film.year}
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div classNam="card-wrapper">
+                          <Card
+                            border="success"
+                            style={{
+                              backgroundColor: "transparent",
+                              height: "430px",
+                            }}
+                          >
+                            <Card.Img
+                              className="d-block w-100"
+                              variant="top"
+                              src={film.imageUrl}
+                              alt={film.title}
+                              style={{
+                                cursor: "pointer",
+                                height: "auto",
+                                maxHeight: "320px",
+                                padding: "25px",
+                              }}
+                              onClick={() => saveMovie(film)}
+                            />
+                            <Card.Header
+                              style={{
+                                color: "rgb(206, 206, 206)",
+
+                                paddingBottom: "0",
+                              }}
+                            >
+                              {film.title}
+                            </Card.Header>
+
+                            <Card.Body>
+                              <Card.Text
+                                style={{
+                                  color: "rgb(206, 206, 206)",
+                                  margin: "0",
+                                }}
+                              >
+                                {film.year}
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </div>
+                      </>
+                    )}
+                  </Carousel.Item>
+                );
+              })}
+            </Carousel>
+          </div>
+        )}
+
         {selectedLink1 === "moviePlaylist" && showMoviePlayList()}
       </div>
       <h3 className="SearchBarTitle">FlickMe</h3>
