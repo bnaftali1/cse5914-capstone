@@ -15,6 +15,11 @@ import Card from "react-bootstrap/Card";
 var Buffer = require("buffer/").Buffer;
 
 function Search(props) {
+  const [value, setValue] = useState("");
+  const handleSelect = (e) => {
+    console.log(e);
+    setValue(e);
+  };
   const [results, setResults] = useState([]); //return of axios call
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [input, setInput] = useState(""); //what the user types into search bar
@@ -39,7 +44,8 @@ function Search(props) {
     console.log(event.target.value.toLowerCase());
   };
 
-  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
+  const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
+
   const encodedToken = Buffer.from(token).toString("base64");
 
   const client = axios.create({
