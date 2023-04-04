@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import React, { useState } from "react";
 import axios from "axios";
 import Carousel from "react-grid-carousel";
@@ -12,6 +14,11 @@ import Card from "react-bootstrap/Card";
 var Buffer = require("buffer/").Buffer;
 
 function Search(props) {
+  const [value, setValue] = useState("");
+  const handleSelect = (e) => {
+    console.log(e);
+    setValue(e);
+  };
   const [results, setResults] = useState([]); //return of axios call
   const [input, setInput] = useState(""); //what the user types into search bar
   const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
@@ -25,15 +32,17 @@ function Search(props) {
 
   const handleDropDownMenuChange2 = (e) => {
     setSelectedLink2(e.target.value);
+    console.log(e);
   };
 
-  const [selectedCheckbox, setSelectedCheckbox] = useState(null);
+  const [selectedCheckbox, setSelectedCheckbox] = useState("title");
 
   const handleCheckboxChange = (event) => {
-    setSelectedCheckbox(event.target.value);
+    setSelectedCheckbox(event.target.value.toLowerCase());
+    console.log(event.target.value.toLowerCase());
   };
 
-  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
+  const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
   const encodedToken = Buffer.from(token).toString("base64");
 
   const client = axios.create({
@@ -433,7 +442,7 @@ function Search(props) {
         {selectedLink1 === "moviePlaylist" && showMoviePlayList()}
       </div>
       <h3 className="SearchBarTitle">FlickMe</h3>
-      <div class="dropdown2">
+      {/* <div class="dropdown2">
         <select value={selectedLink2} onChange={handleDropDownMenuChange2}>
           <option value="">Select a form of media:</option>
           <option value="movies">Movies</option>
@@ -441,12 +450,25 @@ function Search(props) {
           <option value="tv">TV Shows</option>
         </select>
         {selectedLink2 === "movies" && showMovieCheckboxes()}
-      </div>
+      </div> */}
 
       <Form onSubmit={handleSubmit} className="search-bar">
         <InputGroup className="mb-3" size="lg">
+          <DropdownButton
+            variant="outline-light"
+            title={value || "Movies"}
+            onSelect={handleSelect}
+          >
+            {["Movies", "Songs", "TV Shows"].map((option) => (
+              <Dropdown.Item eventKey={option}>{option}</Dropdown.Item>
+            ))}
+          </DropdownButton>
           <Form.Control
-            placeholder="Search your media"
+            placeholder={
+              !value
+                ? "Search your movies"
+                : "Search your " + value.toLowerCase()
+            }
             aria-label=""
             aria-describedby="basic-addon2"
             onChange={(e) => {
@@ -460,6 +482,35 @@ function Search(props) {
             Search
           </Button>
         </InputGroup>
+        {value.toLowerCase() === "movies" && (
+          <div>
+            {[
+              "Movie Title",
+              "Genre",
+              "Year",
+              "Actor",
+              "Actress",
+              "Writer",
+              "Director",
+            ].map((value) => (
+              <Form.Check
+                key={value}
+                inline
+                type={"checkbox"}
+                id={`check-api-checkbox`}
+                value={value}
+              >
+                <Form.Check.Input
+                  type="checkbox"
+                  value={value}
+                  isValid
+                  onChange={handleCheckboxChange}
+                />
+                <Form.Check.Label>{`${value}`}</Form.Check.Label>
+              </Form.Check>
+            ))}
+          </div>
+        )}
       </Form>
 
       {results.length > 0 && (
