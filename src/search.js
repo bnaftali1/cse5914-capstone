@@ -40,8 +40,9 @@ function Search(props) {
   const [selectedCheckbox, setSelectedCheckbox] = useState("title");
 
   const handleCheckboxChange = (event) => {
-    setSelectedCheckbox(event.target.value.toLowerCase());
-    console.log(event.target.value.toLowerCase());
+ const value = event.target.value.toLowerCase();
+ setSelectedCheckbox(value === selectedCheckbox ? "title" : value);
+    console.log(value);
   };
 
   const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
