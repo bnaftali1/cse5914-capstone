@@ -15,6 +15,7 @@ import Card from "react-bootstrap/Card";
 var Buffer = require("buffer/").Buffer;
 
 function Search(props) {
+  const { savedMovies, setSavedMovies } = props;
   const [value, setValue] = useState("");
   const handleSelect = (e) => {
     console.log(e);
@@ -23,19 +24,13 @@ function Search(props) {
   const [results, setResults] = useState([]); //return of axios call
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [input, setInput] = useState(""); //what the user types into search bar
-  const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
+  
 
-  const [selectedLink1, setSelectedLink1] = useState("");
-  const [selectedLink2, setSelectedLink2] = useState("");
+  
 
-  const handleDropDownMenuChange1 = (e) => {
-    setSelectedLink1(e.target.value);
-  };
+ 
 
-  const handleDropDownMenuChange2 = (e) => {
-    setSelectedLink2(e.target.value);
-    console.log(e);
-  };
+  
 
   const [selectedCheckbox, setSelectedCheckbox] = useState("title");
 
@@ -196,290 +191,15 @@ function Search(props) {
     }
   };
 
-  function showMoviePlayList() {
-    return (
-      <>
-        {savedMovies.length > 0 && (
-          <Table striped bordered hover variant="dark">
-            <thead>
-              <tr>
-                <th>
-                  Title{" "}
-                  <Button
-                    className="sort-button"
-                    onClick={() => sortTitle(savedMovies)}
-                  >
-                    ↓
-                  </Button>
-                  <Button
-                    className="sort-button"
-                    onClick={() => sortTitleReverse(savedMovies)}
-                  >
-                    ↑
-                  </Button>
-                </th>
-                <th>
-                  Release Year
-                  <Button
-                    className="sort-button"
-                    onClick={() => sortYear(savedMovies)}
-                  >
-                    ↓
-                  </Button>
-                  <Button
-                    className="sort-button"
-                    onClick={() => sortYearReverse(savedMovies)}
-                  >
-                    ↑
-                  </Button>
-                </th>
-                <th>
-                  Rating
-                  <Button
-                    className="sort-button"
-                    onClick={() => sortRating(savedMovies)}
-                  >
-                    ↓
-                  </Button>
-                  <Button
-                    className="sort-button"
-                    onClick={() => sortRatingReverse(savedMovies)}
-                  >
-                    ↑
-                  </Button>
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {savedMovies.map((film) => {
-                return (
-                  <tr>
-                    <td>{film.title}</td>
-                    <td>{film.year}</td>
-                    <td>{film.rating}</td>
-                    <td>
-                      <Button
-                        variant="danger"
-                        id="button-addon2"
-                        size="sm"
-                        onClick={() => deleteMovie(film)}
-                      >
-                        Remove
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        )}
-        <Button
-          button
-          type="button"
-          class="btn btn-outline-primary"
-          onClick={recommend_query}
-        >
-          Recommendations!
-        </Button>
-      </>
-    );
-  }
+  
 
-  function showMovieCheckboxes() {
-    return (
-      <Form>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="title"
-            checked={selectedCheckbox === "title"}
-            onChange={handleCheckboxChange}
-          />
-          Movie Title
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="genre"
-            checked={selectedCheckbox === "genre"}
-            onChange={handleCheckboxChange}
-          />
-          Genre
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="year"
-            checked={selectedCheckbox === "year"}
-            onChange={handleCheckboxChange}
-          />
-          Year
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="actor"
-            checked={selectedCheckbox === "actor"}
-            onChange={handleCheckboxChange}
-          />
-          Actor
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="actress"
-            checked={selectedCheckbox === "actress"}
-            onChange={handleCheckboxChange}
-          />
-          Actress
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="writer"
-            checked={selectedCheckbox === "writer"}
-            onChange={handleCheckboxChange}
-          />
-          Writer
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="director"
-            checked={selectedCheckbox === "director"}
-            onChange={handleCheckboxChange}
-          />
-          Director
-          <span class="box"></span>
-        </label>
-        <label class="check">
-          <input
-            type="checkbox"
-            value="producer"
-            checked={selectedCheckbox === "producer"}
-            onChange={handleCheckboxChange}
-          />
-          Producer
-          <span class="box"></span>
-        </label>
-      </Form>
-    );
-  }
+ 
 
-  const sortTitle = (target) => {
-    const sortedTitles = [...target].sort((a, b) => {
-      const nameA = a.title.toUpperCase();
-      const nameB = b.title.toUpperCase();
-      if (nameA < nameB) {
-        return 1;
-      }
-      if (nameA > nameB) {
-        return -1;
-      }
-      return 0;
-    });
-    setSavedMovies(sortedTitles);
-    console.log(savedMovies);
-  };
-
-  const sortTitleReverse = (target) => {
-    const sortedTitles = [...target].sort((a, b) => {
-      const nameA = a.title.toUpperCase();
-      const nameB = b.title.toUpperCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    setSavedMovies(sortedTitles);
-    console.log(savedMovies);
-  };
-
-  const sortYear = (target) => {
-    const sortedYears = [...target].sort((a, b) => {
-      const yearA = a.year;
-      const yearB = b.year;
-      if (yearA < yearB) {
-        return 1;
-      }
-      if (yearA > yearB) {
-        return -1;
-      }
-      return 0;
-    });
-    setSavedMovies(sortedYears);
-    console.log(savedMovies);
-  };
-
-  const sortYearReverse = (target) => {
-    const sortedYears = [...target].sort((a, b) => {
-      const yearA = a.year;
-      const yearB = b.year;
-      if (yearA < yearB) {
-        return -1;
-      }
-      if (yearA > yearB) {
-        return 1;
-      }
-      return 0;
-    });
-    setSavedMovies(sortedYears);
-    console.log(savedMovies);
-  };
-
-  const sortRating = (target) => {
-    const sortedRatings = [...target].sort((a, b) => {
-      const ratingA = a.rating;
-      const ratingB = b.rating;
-      if (ratingA < ratingB) {
-        return 1;
-      }
-      if (ratingA > ratingB) {
-        return -1;
-      }
-      return 0;
-    });
-    setSavedMovies(sortedRatings);
-    console.log(savedMovies);
-  };
-
-  const sortRatingReverse = (target) => {
-    const sortedRatings = [...target].sort((a, b) => {
-      const ratingA = a.rating;
-      const ratingB = b.rating;
-      if (ratingA < ratingB) {
-        return -1;
-      }
-      if (ratingA > ratingB) {
-        return 1;
-      }
-      return 0;
-    });
-    setSavedMovies(sortedRatings);
-    console.log(savedMovies);
-  };
 
   return (
     <>
       <div class="dropdown">
-        {savedMovies.length > 0 && (
-          <select value={selectedLink1} onChange={handleDropDownMenuChange1}>
-            <option value="">View My Playlists:</option>
-            <option value="moviePlaylist">My Movie Playlist</option>
-            <option value="songPlaylist">My Song Playlist</option>
-            <option value="tvPlaylist">My TV Show Playlist</option>
-          </select>
-        )}
+        
         {recommendedMovies.length > 0 && (
           <div>
             <Carousel cols={5} rows={1} gap={10} loop>
@@ -590,18 +310,9 @@ function Search(props) {
           </div>
         )}
 
-        {selectedLink1 === "moviePlaylist" && showMoviePlayList()}
+        
       </div>
       <h3 className="SearchBarTitle">FlickMe</h3>
-      {/* <div class="dropdown2">
-        <select value={selectedLink2} onChange={handleDropDownMenuChange2}>
-          <option value="">Select a form of media:</option>
-          <option value="movies">Movies</option>
-          <option value="songs">Songs</option>
-          <option value="tv">TV Shows</option>
-        </select>
-        {selectedLink2 === "movies" && showMovieCheckboxes()}
-      </div> */}
 
       <Form onSubmit={handleSubmit} className="search-bar">
         <InputGroup className="mb-3" size="lg">
@@ -769,27 +480,7 @@ function Search(props) {
                   )}
                 </Carousel.Item>
               );
-              {
-                /* {savedMovies.includes(film) ? (
-                    <Button
-                      variant="danger"
-                      id="button-addon2"
-                      size="sm"
-                      onClick={() => deleteMovie(film)}
-                    >
-                      Remove Saved
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="secondary"
-                      id="button-addon2"
-                      size="sm"
-                      onClick={() => saveMovie(film)}
-                    >
-                      Click to Save!
-                    </Button>
-                  )} */
-              }
+              
             })}
           </Carousel>
         </div>

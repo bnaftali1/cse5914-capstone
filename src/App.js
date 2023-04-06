@@ -4,13 +4,17 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-
+import { BrowserRouter as Router, Routes, Route }
+    from 'react-router-dom';
 import React, { useState } from "react";
 
 import Search from "./search";
+import SavedMoviesPage from "./SavedMoviePage"
+import Test from "./TestPage"
 function App() {
     const [results, setResults] = useState([]);
     const [navbarOptions, SetNavbarOptions] = useState(null);
+    const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
     const GenerateNavOpitons = () => {
         
         if (navbarOptions == null) {
@@ -25,6 +29,7 @@ function App() {
     };
   return (
       <>
+          <Router>
           <Navbar variant="dark" bg="dark" expand="lg">
               <Container fluid>
                   <Navbar.Brand href="#home">FlickMe!</Navbar.Brand>
@@ -36,7 +41,7 @@ function App() {
                               title="Options"
                               menuVariant="dark"
                           >
-                              <NavDropdown.Item href="#">My Saved Movies</NavDropdown.Item>
+                                  <NavDropdown.Item href= "/savedMovies">My Saved Movies</NavDropdown.Item>
                               <NavDropdown.Item href="#action/3.2">
                                   Recommendations
                               </NavDropdown.Item>
@@ -49,13 +54,18 @@ function App() {
                       </Nav>
                   </Navbar.Collapse>
               </Container>
-          </Navbar>
-         
+              </Navbar>
+              <Routes>
+                  <Route exact path='/savedMovies' exact element={<SavedMoviesPage savedMovies={savedMovies} setSavedMovies={setSavedMovies} />} />
+                  
+              </Routes>
+         </Router>
       <div className="App">
         <div className="Wrapper">
-          <Search results={results} setResults={setResults} />
+                  <Search results={results} setResults={setResults} setSavedMovies={setSavedMovies} savedMovies={ savedMovies} />
         </div>
-      </div>
+          </div>
+          
     </>
   );
 }
