@@ -14,15 +14,15 @@ import Card from "react-bootstrap/Card";
 
 var Buffer = require("buffer/").Buffer;
 
-function Search(props) {
-  const { savedMovies, setSavedMovies } = props;
+function Search({setSavedMovies, savedMovies }) {
+  
   const [value, setValue] = useState("");
   const handleSelect = (e) => {
     console.log(e);
     setValue(e);
   };
   const [results, setResults] = useState([]); //return of axios call
-  const [recommendedMovies, setRecommendedMovies] = useState([]);
+  
   const [input, setInput] = useState(""); //what the user types into search bar
   
 
@@ -48,137 +48,105 @@ function Search(props) {
     baseURL: "https://osu-cse-search-4067143756.us-east-1.bonsaisearch.net",
     headers: { Authorization: "Basic " + encodedToken },
   });
-  const recommend_query = () => {
-    var rec_query = null;
-    const movie_ids = savedMovies.map((film) => film.id);
-    const like = movie_ids.map((id) => ({ _index: "imdb", _id: id }));
-    var movie_query = "";
-    for (var i = 0; i < movie_ids.length; i++) {}
-    rec_query = {
-      query: {
-        more_like_this: {
-          fields: ["genres"],
-
-          like,
-          min_term_freq: 1,
-          max_query_terms: 12,
-        },
-      },
+  
+    const handleSubmit = async (e) => {
+        e.preventDefault(); //don't refresh page when submitted
+        var esQuery = null;
+        if (input !== "") {
+            if (selectedCheckbox === "title") {
+                esQuery = {
+                    query: {
+                        match: {
+                            primaryTitle: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "genre") {
+                esQuery = {
+                    query: {
+                        match: {
+                            genres: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "year") {
+                esQuery = {
+                    query: {
+                        match: {
+                            startYear: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "actor") {
+                esQuery = {
+                    query: {
+                        match: {
+                            actor: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "actress") {
+                esQuery = {
+                    query: {
+                        match: {
+                            actress: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "writer") {
+                esQuery = {
+                    query: {
+                        match: {
+                            writer: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "director") {
+                esQuery = {
+                    query: {
+                        match: {
+                            director: input,
+                        },
+                    },
+                };
+            } else if (selectedCheckbox === "producer") {
+                esQuery = {
+                    query: {
+                        match: {
+                            producer: input,
+                        },
+                    },
+                };
+            } else {
+                esQuery = {
+                    query: {
+                        match: {
+                            primaryTitle: input,
+                        },
+                    },
+                };
+            }
+            client
+                .post("/imdb/_search", esQuery)
+                .then((response) => {
+                    console.log(response.data.hits.hits);
+                    let queryReturn = [];
+                    response?.data?.hits?.hits.forEach((film) => {
+                        let cur = {};
+                        cur.id = film._id;
+                        cur.title = film._source.primaryTitle;
+                        cur.year = film._source.startYear;
+                        cur.rating = film._source.averageRating;
+                        cur.imageUrl = film._source.imageUrl;
+                        queryReturn.push(cur);
+                    });
+                    setResults(queryReturn);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
     };
-    client.post("/imdb/_search", rec_query).then((response) => {
-      let queryReturn = [];
-      response?.data?.hits?.hits.forEach((film) => {
-        let cur = {};
-        cur.id = film._id;
-        cur.title = film._source.primaryTitle;
-        cur.year = film._source.startYear;
-        cur.rating = film._source.averageRating;
-        cur.imageUrl = film._source.imageUrl;
-        queryReturn.push(cur);
-      });
-      setRecommendedMovies(queryReturn);
-    });
-  };
-  //TODO: change submit handler to parse the elastic search query.
-  const handleSubmit = async (e) => {
-    e.preventDefault(); //don't refresh page when submitted
-    var esQuery = null;
-    if (input !== "") {
-      if (selectedCheckbox === "title") {
-        esQuery = {
-          query: {
-            match: {
-              primaryTitle: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "genre") {
-        esQuery = {
-          query: {
-            match: {
-              genres: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "year") {
-        esQuery = {
-          query: {
-            match: {
-              startYear: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "actor") {
-        esQuery = {
-          query: {
-            match: {
-              actor: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "actress") {
-        esQuery = {
-          query: {
-            match: {
-              actress: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "writer") {
-        esQuery = {
-          query: {
-            match: {
-              writer: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "director") {
-        esQuery = {
-          query: {
-            match: {
-              director: input,
-            },
-          },
-        };
-      } else if (selectedCheckbox === "producer") {
-        esQuery = {
-          query: {
-            match: {
-              producer: input,
-            },
-          },
-        };
-      } else {
-        esQuery = {
-          query: {
-            match: {
-              primaryTitle: input,
-            },
-          },
-        };
-      }
-      client
-        .post("/imdb/_search", esQuery)
-        .then((response) => {
-          console.log(response.data.hits.hits);
-          let queryReturn = [];
-          response?.data?.hits?.hits.forEach((film) => {
-            let cur = {};
-            cur.id = film._id;
-            cur.title = film._source.primaryTitle;
-            cur.year = film._source.startYear;
-            cur.rating = film._source.averageRating;
-            cur.imageUrl = film._source.imageUrl;
-            queryReturn.push(cur);
-          });
-          setResults(queryReturn);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  };
-
   const deleteMovie = (deleteFilm) => {
     setSavedMovies((savedMovies) =>
       savedMovies.filter((film) => film.id !== deleteFilm.id)
@@ -197,121 +165,9 @@ function Search(props) {
 
 
   return (
-    <>
-      <div class="dropdown">
-        
-        {recommendedMovies.length > 0 && (
-          <div>
-            <Carousel cols={5} rows={1} gap={10} loop>
-              {recommendedMovies.map((film) => {
-                return (
-                  <Carousel.Item
-                    style={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    {savedMovies.includes(film) ? (
-                      <>
-                        <div classNam="card-wrapper">
-                          <Card
-                            border="success"
-                            style={{
-                              backgroundColor: "transparent",
-                              height: "430px",
-                            }}
-                          >
-                            <Card.Img
-                              className="d-block w-100"
-                              variant="top"
-                              src={film.imageUrl}
-                              alt={film.title}
-                              style={{
-                                cursor: "pointer",
-                                height: "auto",
-                                maxHeight: "320px",
-                                padding: "22px",
-                                filter: "grayscale(1)",
-                              }}
-                              onClick={() => deleteMovie(film)}
-                            />
-                            <Card.Header
-                              style={{
-                                color: "rgb(206, 206, 206)",
-
-                                paddingBottom: "0",
-                              }}
-                            >
-                              {film.title}
-                            </Card.Header>
-                            <Card.Body>
-                              <Card.Text
-                                style={{
-                                  color: "rgb(206, 206, 206)",
-                                  margin: "0",
-                                }}
-                              >
-                                {film.year}
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div classNam="card-wrapper">
-                          <Card
-                            border="success"
-                            style={{
-                              backgroundColor: "transparent",
-                              height: "430px",
-                            }}
-                          >
-                            <Card.Img
-                              className="d-block w-100"
-                              variant="top"
-                              src={film.imageUrl}
-                              alt={film.title}
-                              style={{
-                                cursor: "pointer",
-                                height: "auto",
-                                maxHeight: "320px",
-                                padding: "25px",
-                              }}
-                              onClick={() => saveMovie(film)}
-                            />
-                            <Card.Header
-                              style={{
-                                color: "rgb(206, 206, 206)",
-
-                                paddingBottom: "0",
-                              }}
-                            >
-                              {film.title}
-                            </Card.Header>
-
-                            <Card.Body>
-                              <Card.Text
-                                style={{
-                                  color: "rgb(206, 206, 206)",
-                                  margin: "0",
-                                }}
-                              >
-                                {film.year}
-                              </Card.Text>
-                            </Card.Body>
-                          </Card>
-                        </div>
-                      </>
-                    )}
-                  </Carousel.Item>
-                );
-              })}
-            </Carousel>
-          </div>
-        )}
-
-        
-      </div>
+      <>
+      
+   
       <h3 className="SearchBarTitle">FlickMe</h3>
 
       <Form onSubmit={handleSubmit} className="search-bar">
@@ -484,7 +340,8 @@ function Search(props) {
             })}
           </Carousel>
         </div>
-      )}
+              )}
+          
     </>
   );
 }

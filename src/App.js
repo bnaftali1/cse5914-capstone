@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { BrowserRouter as Router, Routes, Route }
+import { BrowserRouter as Router, Routes, Route, Link }
     from 'react-router-dom';
 import React, { useState } from "react";
 
@@ -13,26 +13,15 @@ import SavedMoviesPage from "./SavedMoviePage"
 import Test from "./TestPage"
 function App() {
     const [results, setResults] = useState([]);
-    const [navbarOptions, SetNavbarOptions] = useState(null);
+   
     const [savedMovies, setSavedMovies] = useState([]); //list of movies saved by user
-    const GenerateNavOpitons = () => {
-        
-        if (navbarOptions == null) {
-            
-            SetNavbarOptions( 
-              );
-            
-        }
-        else {
-            SetNavbarOptions(null);
-        }
-    };
+
   return (
       <>
           <Router>
           <Navbar variant="dark" bg="dark" expand="lg">
               <Container fluid>
-                  <Navbar.Brand href="#home">FlickMe!</Navbar.Brand>
+                      <Navbar.Brand as={Link} to="/" >FlickMe!</Navbar.Brand>
                   <Navbar.Toggle aria-controls="navbar-dark-example" />
                   <Navbar.Collapse id="navbar-dark-example">
                       <Nav>
@@ -41,7 +30,7 @@ function App() {
                               title="Options"
                               menuVariant="dark"
                           >
-                                  <NavDropdown.Item href= "/savedMovies">My Saved Movies</NavDropdown.Item>
+                              <NavDropdown.Item as={Link} to="/savedMovies">My Saved Movies</NavDropdown.Item>
                               <NavDropdown.Item href="#action/3.2">
                                   Recommendations
                               </NavDropdown.Item>
@@ -55,16 +44,13 @@ function App() {
                   </Navbar.Collapse>
               </Container>
               </Navbar>
+              
               <Routes>
-                  <Route exact path='/savedMovies' exact element={<SavedMoviesPage savedMovies={savedMovies} setSavedMovies={setSavedMovies} />} />
-                  
+                  <Route path='/savedMovies' element={<div className="App"><div className="Wrapper"><SavedMoviesPage savedMovies={savedMovies} setSavedMovies={setSavedMovies} /></div></div>} />
+                  <Route path='/' element={<div className="App"><div className="Wrapper"><Search results={results} setResults={setResults} setSavedMovies={setSavedMovies} savedMovies={savedMovies}/></div></div>}/>
               </Routes>
          </Router>
-      <div className="App">
-        <div className="Wrapper">
-                  <Search results={results} setResults={setResults} setSavedMovies={setSavedMovies} savedMovies={ savedMovies} />
-        </div>
-          </div>
+    
           
     </>
   );
