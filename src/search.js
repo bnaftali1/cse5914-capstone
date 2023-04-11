@@ -24,14 +24,9 @@ function Search({setSavedMovies, savedMovies }) {
   const [results, setResults] = useState([]); //return of axios call
   
   const [input, setInput] = useState(""); //what the user types into search bar
+  const [querySize, setQuerySize] = useState(10);
+  const [queryParam, setQueryParam] = useState();
   
-
-  
-
- 
-
-  
-
   const [selectedCheckbox, setSelectedCheckbox] = useState("title");
 
   const handleCheckboxChange = (event) => {
@@ -49,6 +44,31 @@ function Search({setSavedMovies, savedMovies }) {
     headers: { Authorization: "Basic " + encodedToken },
   });
   
+  const loadMore = async (e) => {
+    setQuerySize(querySize + 10);
+    let esQuery = queryParam; // add query size
+    esQuery.size = esQuery.size + 10;
+    setQueryParam(esQuery);
+    client
+      .post("/imdb/_search", esQuery)
+      .then((response) => {
+        console.log(response.data.hits.hits);
+        let queryReturn = [];
+        response?.data?.hits?.hits.forEach((film) => {
+          let cur = {};
+          cur.id = film._id;
+          cur.title = film._source.primaryTitle;
+          cur.year = film._source.startYear;
+          cur.rating = film._source.averageRating;
+          cur.imageUrl = film._source.imageUrl;
+          queryReturn.push(cur);
+        });
+        setResults(queryReturn);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
     const handleSubmit = async (e) => {
         e.preventDefault(); //don't refresh page when submitted
         var esQuery = null;
@@ -126,6 +146,11 @@ function Search({setSavedMovies, savedMovies }) {
                     },
                 };
             }
+            esQuery = {
+              ...esQuery,
+              size: querySize,
+            }; // add query size
+            setQueryParam(esQuery);
             client
                 .post("/imdb/_search", esQuery)
                 .then((response) => {
@@ -232,8 +257,12 @@ function Search({setSavedMovies, savedMovies }) {
       </Form>
 
       {results.length > 0 && (
-        <div>
-          <Carousel cols={5} rows={1} gap={10} loop>
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}>
+          <Carousel cols={5} rows={querySize / 10} gap={10} loop>
             {results.map((film) => {
               return (
                 <Carousel.Item
@@ -339,6 +368,14 @@ function Search({setSavedMovies, savedMovies }) {
               
             })}
           </Carousel>
+          <Button
+            variant="outline-light"
+            size="sm"
+            onClick={() => loadMore()}
+            style={{ marginTop: "5px" }}
+          >
+            Load More
+          </Button>
         </div>
               )}
           
