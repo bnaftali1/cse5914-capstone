@@ -44,6 +44,7 @@ function Search({ setSavedMovies, savedMovies }) {
   });
 
   const loadMore = async (e) => {
+    setQuerySize(querySize + 10);
     let esQuery = queryParam; // add query size
     esQuery.size = esQuery.size + 10;
     setQueryParam(esQuery);
