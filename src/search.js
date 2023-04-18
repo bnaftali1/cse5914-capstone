@@ -14,19 +14,18 @@ import Card from "react-bootstrap/Card";
 
 var Buffer = require("buffer/").Buffer;
 
-function Search({setSavedMovies, savedMovies }) {
-  
+function Search({ setSavedMovies, savedMovies }) {
   const [value, setValue] = useState("");
   const handleSelect = (e) => {
     console.log(e);
     setValue(e);
   };
   const [results, setResults] = useState([]); //return of axios call
-  
+
   const [input, setInput] = useState(""); //what the user types into search bar
   const [querySize, setQuerySize] = useState(10);
   const [queryParam, setQueryParam] = useState();
-  
+
   const [selectedCheckbox, setSelectedCheckbox] = useState("title");
 
   const handleCheckboxChange = (event) => {
@@ -34,7 +33,7 @@ function Search({setSavedMovies, savedMovies }) {
     console.log(event.target.value.toLowerCase());
   };
 
-  const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
+  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
 
   const encodedToken = Buffer.from(token).toString("base64");
 
@@ -43,9 +42,8 @@ function Search({setSavedMovies, savedMovies }) {
     baseURL: "https://osu-cse-search-4067143756.us-east-1.bonsaisearch.net",
     headers: { Authorization: "Basic " + encodedToken },
   });
-  
+
   const loadMore = async (e) => {
-    setQuerySize(querySize + 10);
     let esQuery = queryParam; // add query size
     esQuery.size = esQuery.size + 10;
     setQueryParam(esQuery);
@@ -69,109 +67,110 @@ function Search({setSavedMovies, savedMovies }) {
         console.error(error);
       });
   };
-    const handleSubmit = async (e) => {
-        e.preventDefault(); //don't refresh page when submitted
-        var esQuery = null;
-        if (input !== "") {
-            if (selectedCheckbox === "title") {
-                esQuery = {
-                    query: {
-                        match: {
-                            primaryTitle: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "genre") {
-                esQuery = {
-                    query: {
-                        match: {
-                            genres: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "year") {
-                esQuery = {
-                    query: {
-                        match: {
-                            startYear: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "actor") {
-                esQuery = {
-                    query: {
-                        match: {
-                            actor: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "actress") {
-                esQuery = {
-                    query: {
-                        match: {
-                            actress: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "writer") {
-                esQuery = {
-                    query: {
-                        match: {
-                            writer: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "director") {
-                esQuery = {
-                    query: {
-                        match: {
-                            director: input,
-                        },
-                    },
-                };
-            } else if (selectedCheckbox === "producer") {
-                esQuery = {
-                    query: {
-                        match: {
-                            producer: input,
-                        },
-                    },
-                };
-            } else {
-                esQuery = {
-                    query: {
-                        match: {
-                            primaryTitle: input,
-                        },
-                    },
-                };
-            }
-            esQuery = {
-              ...esQuery,
-              size: querySize,
-            }; // add query size
-            setQueryParam(esQuery);
-            client
-                .post("/imdb/_search", esQuery)
-                .then((response) => {
-                    console.log(response.data.hits.hits);
-                    let queryReturn = [];
-                    response?.data?.hits?.hits.forEach((film) => {
-                        let cur = {};
-                        cur.id = film._id;
-                        cur.title = film._source.primaryTitle;
-                        cur.year = film._source.startYear;
-                        cur.rating = film._source.averageRating;
-                        cur.imageUrl = film._source.imageUrl;
-                        queryReturn.push(cur);
-                    });
-                    setResults(queryReturn);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-    };
+  const handleSubmit = async (e) => {
+    setQuerySize(10);
+    e.preventDefault(); //don't refresh page when submitted
+    var esQuery = null;
+    if (input !== "") {
+      if (selectedCheckbox === "title") {
+        esQuery = {
+          query: {
+            match: {
+              primaryTitle: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "genre") {
+        esQuery = {
+          query: {
+            match: {
+              genres: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "year") {
+        esQuery = {
+          query: {
+            match: {
+              startYear: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "actor") {
+        esQuery = {
+          query: {
+            match: {
+              actor: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "actress") {
+        esQuery = {
+          query: {
+            match: {
+              actress: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "writer") {
+        esQuery = {
+          query: {
+            match: {
+              writer: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "director") {
+        esQuery = {
+          query: {
+            match: {
+              director: input,
+            },
+          },
+        };
+      } else if (selectedCheckbox === "producer") {
+        esQuery = {
+          query: {
+            match: {
+              producer: input,
+            },
+          },
+        };
+      } else {
+        esQuery = {
+          query: {
+            match: {
+              primaryTitle: input,
+            },
+          },
+        };
+      }
+      esQuery = {
+        ...esQuery,
+        size: 10,
+      }; // add query size
+      setQueryParam(esQuery);
+      client
+        .post("/imdb/_search", esQuery)
+        .then((response) => {
+          console.log(response.data.hits.hits);
+          let queryReturn = [];
+          response?.data?.hits?.hits.forEach((film) => {
+            let cur = {};
+            cur.id = film._id;
+            cur.title = film._source.primaryTitle;
+            cur.year = film._source.startYear;
+            cur.rating = film._source.averageRating;
+            cur.imageUrl = film._source.imageUrl;
+            queryReturn.push(cur);
+          });
+          setResults(queryReturn);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
   const deleteMovie = (deleteFilm) => {
     setSavedMovies((savedMovies) =>
       savedMovies.filter((film) => film.id !== deleteFilm.id)
@@ -184,15 +183,8 @@ function Search({setSavedMovies, savedMovies }) {
     }
   };
 
-  
-
- 
-
-
   return (
-      <>
-      
-   
+    <>
       <h3 className="SearchBarTitle">FlickMe</h3>
 
       <Form onSubmit={handleSubmit} className="search-bar">
@@ -257,11 +249,13 @@ function Search({setSavedMovies, savedMovies }) {
       </Form>
 
       {results.length > 0 && (
-        <div style={{
+        <div
+          style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
+          }}
+        >
           <Carousel cols={5} rows={querySize / 10} gap={10} loop>
             {results.map((film) => {
               return (
@@ -365,7 +359,6 @@ function Search({setSavedMovies, savedMovies }) {
                   )}
                 </Carousel.Item>
               );
-              
             })}
           </Carousel>
           <Button
@@ -377,8 +370,7 @@ function Search({setSavedMovies, savedMovies }) {
             Load More
           </Button>
         </div>
-              )}
-          
+      )}
     </>
   );
 }
