@@ -33,7 +33,7 @@ function Search({ setSavedMovies, savedMovies }) {
     console.log(event.target.value.toLowerCase());
   };
 
-  const token = `${process.env.REACT_APP_BONSAI_UNAME}:${process.env.REACT_APP_BONSAI_PSWRD}`;
+    const token = `${"ma8uksnn1e"}:${"p2z0os6mqq"}`;
 
   const encodedToken = Buffer.from(token).toString("base64");
 
